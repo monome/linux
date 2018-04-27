@@ -19,6 +19,7 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
 	audremap.dtbo \
 	balena-fin.dtbo \
 	bmp085_i2c-sensor.dtbo \
+	bq27441.dtbo \
 	dht11.dtbo \
 	dionaudio-loco.dtbo \
 	dionaudio-loco-v2.dtbo \
