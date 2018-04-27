@@ -36,6 +36,7 @@ snd-soc-allo-piano-dac-plus-objs := allo-piano-dac-plus.o
 snd-soc-allo-digione-objs := allo-digione.o
 snd-soc-allo-katana-codec-objs := allo-katana-codec.o
 snd-soc-pisound-objs := pisound.o
+snd-soc-monome-objs := monome.o
 snd-soc-fe-pi-audio-objs := fe-pi-audio.o
 
 obj-$(CONFIG_SND_BCM2708_SOC_ADAU1977_ADC) += snd-soc-adau1977-adc.o
@@ -63,4 +64,5 @@ obj-$(CONFIG_SND_BCM2708_SOC_ALLO_PIANO_DAC_PLUS) += snd-soc-allo-piano-dac-plus
 obj-$(CONFIG_SND_BCM2708_SOC_ALLO_DIGIONE) += snd-soc-allo-digione.o
 obj-$(CONFIG_SND_BCM2708_SOC_ALLO_KATANA_DAC) += snd-soc-allo-katana-codec.o
 obj-$(CONFIG_SND_PISOUND) += snd-soc-pisound.o
+obj-$(CONFIG_SND_BCM2708_SOC_MONOME) += snd-soc-monome.o
 obj-$(CONFIG_SND_BCM2708_SOC_FE_PI_AUDIO) += snd-soc-fe-pi-audio.o
