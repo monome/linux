@@ -1784,6 +1784,12 @@ Params: cs0_pin                 GPIO pin for CS0 (default 43 - BCM SPI2_CE0).
                                 is 'okay' or enabled).
 
 
+Name:   ssd1322-spi
+Info:   Enable ssd1322 OLED display
+Load:   dtoverlay=ssd1322-spi
+Params: <None>
+
+
 Name:   superaudioboard
 Info:   Configures the SuperAudioBoard sound card
 Load:   dtoverlay=superaudioboard,<param>=<val>
