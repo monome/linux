@@ -905,6 +905,12 @@ Info:   This overlay is now deprecated - see i2c-sensor
 Load:   <Deprecated>
 
 
+Name:   bq27441
+Info:   TI BQ27441 battery management
+Load:   dtoverlay=bq27441
+Params: <None>
+
+
 Name:   camera-mux-2port
 Info:   Configures a 2 port camera multiplexer
         Note that currently ALL IMX290 modules share a common clock, therefore
@@ -1037,7 +1043,6 @@ Params: ready_pin               GPIO pin for ready signal (default 4)
 Name:   chipdip-dac
 Info:   Configures Chip Dip audio cards.
 Load:   dtoverlay=chipdip-dac
-Params: <None>
 
 
 Name:   cirrus-wm5102

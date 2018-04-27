@@ -36,6 +36,7 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
 	audremap-pi5.dtbo \
 	balena-fin.dtbo \
 	bcm2712d0.dtbo \
+	bq27441.dtbo \
 	camera-mux-2port.dtbo \
 	camera-mux-4port.dtbo \
 	cap1106.dtbo \
