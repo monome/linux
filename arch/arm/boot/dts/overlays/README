@@ -376,6 +376,12 @@ Load:   dtoverlay=bmp085_i2c-sensor
 Params: <None>
 
 
+Name:   bq27441
+Info:   TI BQ27441 battery management
+Load:   dtoverlay=bq27441
+Params: <None>
+
+
 Name:   dht11
 Info:   Overlay for the DHT11/DHT21/DHT22 humidity/temperature sensors
         Also sometimes found with the part number(s) AM230x.
