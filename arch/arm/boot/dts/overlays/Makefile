@@ -136,6 +136,7 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
 	miniuart-bt.dtbo \
 	mlx90640.dtbo \
 	mmc.dtbo \
+	monome-snd.dtbo \
 	mpu6050.dtbo \
 	mz61581.dtbo \
 	ov5647.dtbo \

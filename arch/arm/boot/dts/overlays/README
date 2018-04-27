@@ -2386,6 +2386,12 @@ Params: interrupt               GPIO pin for interrupt (default 4)
         addr                    I2C address of the device (default 0x68)
 
 
+Name:   monome-snd
+Info:   Configures the Monome audio card
+Load:   dtoverlay=monome-snd
+Params: <None>
+
+
 Name:   mz61581
 Info:   MZ61581 display by Tontec
 Load:   dtoverlay=mz61581,<param>=<val>
