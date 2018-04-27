@@ -650,6 +650,12 @@ Info:   This overlay is now deprecated - see i2c-sensor
 Load:   <Deprecated>
 
 
+Name:   bq27441
+Info:   TI BQ27441 battery management
+Load:   dtoverlay=bq27441
+Params: <None>
+
+
 Name:   cap1106
 Info:   Enables the ability to use the cap1106 touch sensor as a keyboard
 Load:   dtoverlay=cap1106,<param>=<val>
@@ -659,7 +665,6 @@ Params: int_pin                 GPIO pin for interrupt signal (default 23)
 Name:   chipdip-dac
 Info:   Configures Chip Dip audio cards.
 Load:   dtoverlay=chipdip-dac
-Params: <None>
 
 
 Name:   cma
