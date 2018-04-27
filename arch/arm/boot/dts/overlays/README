@@ -1520,6 +1520,12 @@ Params: cs0_pin                 GPIO pin for CS0 (default 43 - BCM SPI2_CE0).
                                 is 'okay' or enabled).
 
 
+Name:   ssd1322-spi
+Info:   Enable ssd1322 OLED display
+Load:   dtoverlay=ssd1322-spi
+Params: <None>
+
+
 Name:   tinylcd35
 Info:   3.5" Color TFT Display by www.tinylcd.com
         Options: Touch, RTC, keypad
