@@ -3373,6 +3373,12 @@ Params: speed                   SPI bus speed (default 10000000)
         height                  Display height (32 or 64; default 64)
 
 
+Name:   ssd1322-spi
+Info:   Enable ssd1322 OLED display
+Load:   dtoverlay=ssd1322-spi
+Params: <None>
+
+
 Name:   ssd1331-spi
 Info:   Overlay for SSD1331 OLED via SPI using fbtft staging driver.
 Load:   dtoverlay=ssd1331-spi,<param>=<val>
