@@ -991,6 +991,12 @@ Load:   dtoverlay=mpu6050,<param>=<val>
 Params: interrupt               GPIO pin for interrupt (default 4)
 
 
+Name:   monome-snd
+Info:   Configures the Monome audio card
+Load:   dtoverlay=monome-snd
+Params: <None>
+
+
 Name:   mz61581
 Info:   MZ61581 display by Tontec
 Load:   dtoverlay=mz61581,<param>=<val>
