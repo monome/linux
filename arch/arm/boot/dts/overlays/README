@@ -1019,6 +1019,12 @@ Params: speed                   Display SPI bus speed
         xohms                   Touchpanel sensitivity (X-plate resistance)
 
 
+Name:   norns-buttons-encoders.dts
+Info:   Norns buttons and encoders
+Load:   dtoverlay=norns-buttons-encoders
+Params: <None>
+
+
 Name:   papirus
 Info:   PaPiRus ePaper Screen by Pi Supply (both HAT and pHAT)
 Load:   dtoverlay=papirus,<param>=<val>

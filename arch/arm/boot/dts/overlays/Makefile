@@ -66,6 +66,7 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
 	monome-snd.dtbo \
 	mpu6050.dtbo \
 	mz61581.dtbo \
+	norns-buttons-encoders.dtbo \
 	papirus.dtbo \
 	pi3-act-led.dtbo \
 	pi3-disable-bt.dtbo \
