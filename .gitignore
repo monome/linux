@@ -180,3 +180,7 @@ sphinx_*/
 
 # Rust analyzer configuration
 /rust-project.json
+
+# norns build output
+/build
+
