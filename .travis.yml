@@ -1,0 +1,8 @@
+branches:
+  only:
+    - norns-20171029-1
+
+sudo: required
+services: docker
+
+script: ./build-kernel.sh
