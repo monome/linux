@@ -1,0 +1,26 @@
+# Norns config.txt
+
+# How much memory in MB to assign to the GPU in MB
+# Lowest possible value is 16
+gpu_mem=16
+
+# Enable software shutdown
+dtoverlay=gpio-poweroff:gpiopin=12,active_low=1
+
+# Display
+# Connected using SPI
+dtparam=spi=on
+dtoverlay=ssd1322-spi
+
+# Soundcard
+# Connected using I2S
+# CS4270 codec used by soundcard connected using I2C
+dtparam=i2s=on
+dtparam=i2c=on
+dtoverlay=monome-snd
+
+# Battery management
+dtoverlay=bq27441
+
+# Buttons and encoders
+dtoverlay=norns-buttons-encoders
