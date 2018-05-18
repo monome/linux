@@ -1,6 +1,6 @@
 # Norns config.txt
 
-kernel=kernel-4.9.59-rt52-0.0.5.img
+kernel=kernel-4.9.59-rt52-0.0.6.img
 
 # How much memory in MB to assign to the GPU in MB
 # Lowest possible value is 16
