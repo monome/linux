@@ -6,3 +6,14 @@ sudo: required
 services: docker
 
 script: ./build-kernel.sh
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file:
+    - build/kernel-4.9.59-rt52-${TRAVIS_TAG}.tar.gz
+  skip_cleanup: true
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^norns-.*$
+    tags: true
