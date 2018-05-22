@@ -1,1 +1,1 @@
-root=/dev/mmcblk0p2 rootwait console=ttyAMA0,115200 consoleblank=0
+root=/dev/mmcblk0p2 rootwait console=ttyAMA0,115200 consoleblank=0 fbcon=map:1
