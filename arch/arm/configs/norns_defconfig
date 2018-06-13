@@ -867,53 +867,8 @@ CONFIG_CRYPTO_AES_ARM_BS=m
 CONFIG_CRC_ITU_T=y
 CONFIG_LIBCRC32C=y
 
-# CONFIG options necessary for allnoconfig to work
-# Added to allow ARCH_BCM2835 to be enabled
-CONFIG_MMU=y
-CONFIG_ARCH_MULTI_V7=y
-
-# missing arm options
-CONFIG_ARM_ARCH_TIMER_EVTSTREAM=y
-CONFIG_ARM_CPU_TOPOLOGY=y
-CONFIG_ARM_ERRATA_643719=y
-CONFIG_ARM_PATCH_IDIV=y
-CONFIG_ARM_THUMB=y
-CONFIG_ARM_UNWIND=y
-
-# Remaining difference in config options with bcm in it
-CONFIG_BCM2708_VCHIQ=y
-CONFIG_BCM2708_VCMEM=y
-CONFIG_BCM2835_DEVGPIOMEM=m
-CONFIG_BCM2835_SMI=m
-CONFIG_ARM_BCM2835_CPUFREQ=y
-CONFIG_HW_RANDOM_BCM2835=y
-CONFIG_BCM2835_SMI_DEV=m
-CONFIG_BCMGENET=n
-CONFIG_BT_BCM=m
-CONFIG_BT_HCIBTUSB_BCM=y
-CONFIG_I2C_BCM2048=n
-CONFIG_MTD_NAND_BCM2835_SMI=m
-# We probably don't need this
-# Seems to be mainly for direct bcm wlan
-#CONFIG_BCMA=m
-#CONFIG_BCMA_HOST_SOC=n
-#CONFIG_BCMA_DRIVER_GMAC_CMN=n
-#CONFIG_BCMA_DRIVER_GPIO=n
-#CONFIG_BCMA_DEBUG=n
-
-# binary test
-#CONFIG_SMP_ON_UP=y
-#CONFIG_SND_DRIVERS=y
-#CONFIG_SND_PCM_OSS_PLUGINS=y
-#CONFIG_SND_PCM_TIMER=y
-#CONFIG_SND_SEQ_HRTIMER_DEFAULT=y
-#CONFIG_SND_SPI=y
-#CONFIG_SND_SUPPORT_OLD_API=y
-
 # Custom options
 CONFIG_PREEMPT=y
-CONFIG_POWER_SUPPLY=y
-CONFIG_BATTERY_BQ27XXX=y
 
 # Hardware
 ## OLED display
@@ -924,19 +879,17 @@ CONFIG_SPI_BCM2835=y
 CONFIG_SPI_BCM2835AUX=m
 
 ## monome-snd
-CONFIG_SND_BCM2708_SOC_MONOME=y
-CONFIG_SND_BCM2835_SOC_I2S=y
-CONFIG_SND_SOC=y
 CONFIG_SND=y
+CONFIG_SND_SOC=y
+CONFIG_SND_BCM2835_SOC_I2S=y
+CONFIG_SND_BCM2708_SOC_MONOME=y
 # Needed for CS4270 codec
 CONFIG_I2C=y
 CONFIG_I2C_BCM2835=y
 # Needed for user-space interaction with I2C
 CONFIG_I2C_CHARDEV=y
-
-CONFIG_SND_BCM2835=y
 CONFIG_SND_ARM=y
-
+CONFIG_SND_BCM2835=y
 # CONFIG_SND_SOC_SPDIF is not set
 # CONFIG_SND_SOC_WM8804_I2C is not set
 # TODO we can probably disable the auxiliary mini UART since we don't use it
@@ -944,8 +897,12 @@ CONFIG_SERIAL_8250_BCM2835AUX=y
 CONFIG_SERIAL_AMBA_PL011=y
 CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
 
-# Explicit disables needed for defconfig
-# Can be removed once we switch to allnoconfig
+## TI BQ27441 battery management
+CONFIG_POWER_SUPPLY=y
+CONFIG_BATTERY_BQ27XXX=y
+
+# Explicit disables for config options we don't want
+# that default to Y when using defconfig
 # CONFIG_LCD_CLASS_DEVICE is not set
 # Disable Legacy PTYS to prevent a gazillion PTYS from being created
 # CONFIG_LEGACY_PTYS is not set
