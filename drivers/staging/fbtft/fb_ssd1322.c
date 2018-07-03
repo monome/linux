@@ -15,28 +15,32 @@
 #define GAMMA_LEN   15
 #define DEFAULT_GAMMA "1 1 1 1 1 2 2 3 3 4 4 5 5 6 6"
 
-int init[] = {			/* Initialization for LM560G-256064 5.6" OLED display */
-	//-1, 0xFD, 0x12,		/* Unlock OLED driver IC */
-	-1, 0xAE,		/* Display OFF (blank) */
-	-1, 0xB9,		/* Select default linear grayscale */
-	-1, 0xB3, 0x91,		/* Display divide clockratio/frequency */
-	-1, 0xCA, 0x3F,		/* Multiplex ratio, 1/64, 64 COMS enabled */
-	-1, 0xA2, 0x00,		/* Set offset, the display map starting line is COM0 */
-	-1, 0xA1, 0x00,		/* Set start line position */
-	-1, 0xA0, 0x16, 0x11,	/* Set remap, horiz address increment, disable colum address remap, */
-				/*  enable nibble remap, scan from com[N-1] to COM0, disable COM split odd even */
-	-1, 0xAB, 0x01,		/* Select external VDD */
-	-1, 0xB4, 0xA0, 0xFD,	/* Display enhancement A, external VSL, enhanced low GS display quality */
-	-1, 0xC1, 0x7F,		/* Contrast current, 256 steps, default is 0x7F */
-	-1, 0xC7, 0x0F,		/* Master contrast current, 16 steps, default is 0x0F */
-	-1, 0xB1, 0xF2,		/* Phase Length */
-	//-1, 0xD1, 0x82, 0x20	/* Display enhancement B */
-	-1, 0xBB, 0x1F,		/* Pre-charge voltage */
-	-1, 0xBE, 0x04,		/* Set VCOMH */
-	-1, 0xA6,		/* Normal display */
-	-1, 0xAF,		/* Display ON */
-	-3 };
+static int init_display(struct fbtft_par *par)
+{
+        /* Initialization for LM560G-256064 5.6" OLED display */
+	par->fbtftops.reset(par);
+	//-1, 0xFD, 0x12,	          /* Unlock OLED driver IC */
+	write_reg(par, 0xAE);             /* Display OFF (blank) */
+	write_reg(par, 0xB9);	          /* Select default linear grayscale */
+	write_reg(par, 0xB3, 0x91);	  /* Display divide clockratio/frequency */
+	write_reg(par, 0xCA, 0x3F);	  /* Multiplex ratio, 1/64, 64 COMS enabled */
+	write_reg(par, 0xA2, 0x00);	  /* Set offset, the display map starting line is COM0 */
+	write_reg(par, 0xA1, 0x00);       /* Set start line position */
+	write_reg(par, 0xA0, 0x16, 0x11); /* Set remap, horiz address increment, disable colum address remap, */
+	/*  enable nibble remap, scan from com[N-1] to COM0, disable COM split odd even */
+	write_reg(par, 0xAB, 0x01);	  /* Select external VDD */
+	write_reg(par, 0xB4, 0xA0, 0xFD); /* Display enhancement A, external VSL, enhanced low GS display quality */
+	write_reg(par, 0xC1, 0x7F);	  /* Contrast current, 256 steps, default is 0x7F */
+	write_reg(par, 0xC7, 0x0F);	  /* Master contrast current, 16 steps, default is 0x0F */
+	write_reg(par, 0xB1, 0xF2);	  /* Phase Length */
+	//-1, 0xD1, 0x82, 0x20	          /* Display enhancement B */
+	write_reg(par, 0xBB, 0x1F);	  /* Pre-charge voltage */
+	write_reg(par, 0xBE, 0x04);	  /* Set VCOMH */
+	write_reg(par, 0xA6);		  /* Normal display */
+	write_reg(par, 0xAF);		  /* Display ON */
 
+	return 0;
+}
 
 static void set_addr_win(struct fbtft_par *par, int xs, int ys, int xe, int ye)
 {
@@ -60,7 +64,7 @@ static void set_addr_win(struct fbtft_par *par, int xs, int ys, int xe, int ye)
 	0 = Setting of GS1 < Setting of GS2 < Setting of GS3..... < Setting of GS14 < Setting of GS15
 
 */
-static int set_gamma(struct fbtft_par *par, unsigned long *curves)
+static int set_gamma(struct fbtft_par *par, u32 *curves)
 {
 	unsigned long tmp[GAMMA_LEN * GAMMA_NUM];
 	int i, acc = 0;
@@ -164,8 +168,8 @@ static struct fbtft_display display = {
 	.gamma_num = GAMMA_NUM,
 	.gamma_len = GAMMA_LEN,
 	.gamma = DEFAULT_GAMMA,
-	.init_sequence = init,
 	.fbtftops = {
+		.init_display = init_display,
 		.write_vmem = write_vmem,
 		.set_addr_win  = set_addr_win,
 		.blank = blank,
