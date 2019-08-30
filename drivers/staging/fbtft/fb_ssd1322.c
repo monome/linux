@@ -1,4 +1,18 @@
-#include <linux/module.h>
+/*
+ * FB driver for the SSD1322 OLED Controller
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include<linux/module.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
 #include <linux/init.h>
@@ -15,32 +29,40 @@
 #define GAMMA_LEN   15
 #define DEFAULT_GAMMA "1 1 1 1 1 2 2 3 3 4 4 5 5 6 6"
 
+
 static int init_display(struct fbtft_par *par)
 {
-        /* Initialization for LM560G-256064 5.6" OLED display */
+	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "%s()\n", __func__);
+
 	par->fbtftops.reset(par);
-	//-1, 0xFD, 0x12,	          /* Unlock OLED driver IC */
-	write_reg(par, 0xAE);             /* Display OFF (blank) */
-	write_reg(par, 0xB9);	          /* Select default linear grayscale */
-	write_reg(par, 0xB3, 0x91);	  /* Display divide clockratio/frequency */
-	write_reg(par, 0xCA, 0x3F);	  /* Multiplex ratio, 1/64, 64 COMS enabled */
-	write_reg(par, 0xA2, 0x00);	  /* Set offset, the display map starting line is COM0 */
-	write_reg(par, 0xA1, 0x00);       /* Set start line position */
-	write_reg(par, 0xA0, 0x16, 0x11); /* Set remap, horiz address increment, disable colum address remap, */
+
+	//write_reg(par, 0xfd, 0x12); /* Unlock OLED driver IC */
+	write_reg(par, 0xAE); 		/* Display Off */
+	write_reg(par, 0xB9); 		/* Select default linear grayscale */
+	write_reg(par, 0xB3, 0x91); /* Display divide clockratio/frequency */
+	write_reg(par, 0xCA, 0x3F); /* Multiplex ratio, 1/64, 64 COMS enabled */
+	write_reg(par, 0xA2, 0x00); /* Set offset, the display map starting line is COM0 */
+	write_reg(par, 0xA1, 0x00); /* Set start line position */
+	/* Set remap, horiz address increment, disable colum address remap, */
 	/*  enable nibble remap, scan from com[N-1] to COM0, disable COM split odd even */
-	write_reg(par, 0xAB, 0x01);	  /* Select external VDD */
+	if (par->info->var.rotate == 180)
+		write_reg(par, 0xa0, 0x04, 0x11);
+	else
+		write_reg(par, 0xa0, 0x16, 0x11); 
+
+	write_reg(par, 0xAB, 0x01); /* Select internal VDD */
 	write_reg(par, 0xB4, 0xA0, 0xFD); /* Display enhancement A, external VSL, enhanced low GS display quality */
-	write_reg(par, 0xC1, 0x7F);	  /* Contrast current, 256 steps, default is 0x7F */
-	write_reg(par, 0xC7, 0x0F);	  /* Master contrast current, 16 steps, default is 0x0F */
-	write_reg(par, 0xB1, 0xF2);	  /* Phase Length */
-	//-1, 0xD1, 0x82, 0x20	          /* Display enhancement B */
-	write_reg(par, 0xBB, 0x1F);	  /* Pre-charge voltage */
-	write_reg(par, 0xBE, 0x04);	  /* Set VCOMH */
-	write_reg(par, 0xA6);		  /* Normal display */
-	write_reg(par, 0xAF);		  /* Display ON */
+	write_reg(par, 0xC1, 0x7F); /* Contrast current, 256 steps, default is 0x7F */
+	write_reg(par, 0xC7, 0x0F); /* Master contrast current, 16 steps, default is 0x0F */
+	write_reg(par, 0xB1, 0xF2); /* Phase Length */
+	write_reg(par, 0xBB, 0x1F); /* Pre-charge voltage */
+	write_reg(par, 0xBE, 0x04); /* Set VCOMH */
+	write_reg(par, 0xA6); /* Normal display */
+	write_reg(par, 0xaf); /* Display ON */
 
 	return 0;
 }
+
 
 static void set_addr_win(struct fbtft_par *par, int xs, int ys, int xe, int ye)
 {
@@ -169,8 +191,8 @@ static struct fbtft_display display = {
 	.gamma_len = GAMMA_LEN,
 	.gamma = DEFAULT_GAMMA,
 	.fbtftops = {
-		.init_display = init_display,
 		.write_vmem = write_vmem,
+		.init_display = init_display,
 		.set_addr_win  = set_addr_win,
 		.blank = blank,
 		.set_gamma = set_gamma,
