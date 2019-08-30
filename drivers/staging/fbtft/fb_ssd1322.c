@@ -17,7 +17,8 @@
 
 static int init_display(struct fbtft_par *par)
 {
-        /* Initialization for LM560G-256064 5.6" OLED display */
+	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "%s()\n", __func__);
+
 	par->fbtftops.reset(par);
 	//-1, 0xFD, 0x12,	          /* Unlock OLED driver IC */
 	write_reg(par, 0xAE);             /* Display OFF (blank) */
@@ -28,6 +29,11 @@ static int init_display(struct fbtft_par *par)
 	write_reg(par, 0xA1, 0x00);       /* Set start line position */
 	write_reg(par, 0xA0, 0x16, 0x11); /* Set remap, horiz address increment, disable colum address remap, */
 	/*  enable nibble remap, scan from com[N-1] to COM0, disable COM split odd even */
+	if (par->info->var.rotate == 180)
+		write_reg(par, 0xa0, 0x04, 0x11);
+	else
+		write_reg(par, 0xa0, 0x16, 0x11);
+
 	write_reg(par, 0xAB, 0x01);	  /* Select external VDD */
 	write_reg(par, 0xB4, 0xA0, 0xFD); /* Display enhancement A, external VSL, enhanced low GS display quality */
 	write_reg(par, 0xC1, 0x7F);	  /* Contrast current, 256 steps, default is 0x7F */
