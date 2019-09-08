@@ -39,7 +39,8 @@ static int snd_rpi_monome_hw_params(struct snd_pcm_substream *substream,
   struct snd_soc_pcm_runtime *rtd = substream->private_data;
   struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
   struct snd_soc_dai *codec_dai = rtd->codec_dai;
-  struct snd_soc_codec *codec = rtd->codec;
+  struct snd_soc_card *card = rtd->card;
+
   
   int sysclk = 12288000;
   int ret = 0;
@@ -49,7 +50,7 @@ static int snd_rpi_monome_hw_params(struct snd_pcm_substream *substream,
 
   if (ret < 0)
     {
-      dev_err(codec->dev, "Unable to set CS4270 system clock.");
+      dev_err(card->dev, "Unable to set CS4270 system clock.");
       return ret;
     }
   
