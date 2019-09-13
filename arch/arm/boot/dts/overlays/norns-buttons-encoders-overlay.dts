@@ -31,13 +31,6 @@
             };
         };
     };
-    //__overrides__ {
-        //relative_axis =  <&knob>,"rotary-encoder,relative-axis";
-        //linux_axis =  <&knob>,"linux,axis";
-        //rollover =  <&knob>,"rotary-encoder,rollover";
-        //half-period =  <&knob>,"rotary-encoder,half-period";
-        //steps =  <&knob>,"rotary-encoder,steps";
-    //};
 
     fragment@2 {
         target-path = "/soc/gpio";
@@ -66,13 +59,6 @@
             };
         };
     };
-    //__overrides__ {
-        //relative_axis =  <&knob>,"rotary-encoder,relative-axis";
-        //linux_axis =  <&knob>,"linux,axis";
-        //rollover =  <&knob>,"rotary-encoder,rollover";
-        //half-period =  <&knob>,"rotary-encoder,half-period";
-        //steps =  <&knob>,"rotary-encoder,steps";
-    //};
 
     fragment@4 {
         target-path = "/soc/gpio";
@@ -88,7 +74,7 @@
     fragment@5 {
         target-path = "/soc";
         __overlay__ {
-            knob0: knob3 {
+            knob3: knob3 {
                 compatible = "rotary-encoder";
                 #address-cells = <1>;
                 #size-cells = <0>;
@@ -101,13 +87,6 @@
             };
         };
     };
-    //__overrides__ {
-        //relative_axis =  <&knob>,"rotary-encoder,relative-axis";
-        //linux_axis =  <&knob>,"linux,axis";
-        //rollover =  <&knob>,"rotary-encoder,rollover";
-        //half-period =  <&knob>,"rotary-encoder,half-period";
-        //steps =  <&knob>,"rotary-encoder,steps";
-    //};
 
     fragment@6 {
        target-path = "/";
@@ -116,19 +95,37 @@
              compatible = "gpio-keys";
              #address-cells = <1>;
              #size-cells = <0>;
-             button@31 {
+             button1: button1 {
                 linux,code = <1>;
                 gpios = <&gpio 31 1>;
              };
-             button@35 {
+             button2: button2 {
                 linux,code = <2>;
                 gpios = <&gpio 35 1>;
              };
-             button@39 {
+             button3: button3 {
                 linux,code = <3>;
                 gpios = <&gpio 39 1>;
              };
           };
        };
+    };
+
+    __overrides__ {
+        e1_pin_a = <&knob_pins1>,"brcm,pins:0",
+                   <&knob1>,"gpios:4";
+        e1_pin_b = <&knob_pins1>,"brcm,pins:4",
+                   <&knob1>,"gpios:16";
+        e2_pin_a = <&knob_pins2>,"brcm,pins:0",
+                   <&knob2>,"gpios:4";
+        e2_pin_b = <&knob_pins2>,"brcm,pins:4",
+                   <&knob2>,"gpios:16";
+        e3_pin_a = <&knob_pins3>,"brcm,pins:0",
+                   <&knob3>,"gpios:4";
+        e3_pin_b = <&knob_pins3>,"brcm,pins:4",
+                   <&knob3>,"gpios:16";
+        b1_pin = <&button1>,"gpios:4";
+        b2_pin = <&button2>,"gpios:4";
+        b3_pin = <&button3>,"gpios:4";
     };
 };
