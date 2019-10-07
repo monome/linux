@@ -74,6 +74,7 @@ RESET# = GPIO6
     rotate		= <&ssd1322>,"rotate:0";
     bgr				= <&ssd1322>,"bgr:0";
     fps				= <&ssd1322>,"fps:0";
-    debug			= <&ssd1322>,"debug:0";
+    debug     = <&ssd1322>,"debug:0";
+    dc-pin    = <&ssd1322>,"dc-gpios:4";
   };
 };
