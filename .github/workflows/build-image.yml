@@ -1,0 +1,34 @@
+name: build-image
+
+on:
+  push:
+    branches:
+      - norns-*
+      - feature/*
+      - fix/*
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - norns-kernel_*
+
+  # Run tests for any PRs.
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Authenticate
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+      - name: Build
+        run: |
+          ./build-kernel.sh
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: kernel-image
+          path: build/kernel-*
