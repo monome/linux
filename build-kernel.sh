@@ -5,7 +5,7 @@ set -x -e
 docker pull docker.pkg.github.com/monome/norns-kernel-builder/image:latest
 
 # run build
-docker run --rm -ti \
+docker run --rm \
   -v "${PWD}":/workdir \
   -e DEFCONFIG=norns_defconfig \
   docker.pkg.github.com/monome/norns-kernel-builder/image:latest
