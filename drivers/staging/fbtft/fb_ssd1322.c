@@ -133,7 +133,7 @@ static int write_vmem(struct fbtft_par *par, size_t offset, size_t len)
 	int ret = 0;
 
 	/* Set data line beforehand */
-	gpio_set_value(par->gpio.dc, 1);
+	gpiod_set_value(par->gpio.dc, 1);
 
 	/* convert offset to word index from byte index */
 	offset /= 2;
