@@ -2,10 +2,10 @@
 set -x -e
 
 # Make sure we have the latest version of the image
-docker pull docker.pkg.github.com/monome/norns-kernel-builder/image:latest
+docker pull ghcr.io/monome/norns-kernel-builder/image:latest
 
 # run build
 docker run --rm \
   -v "${PWD}":/workdir \
   -e DEFCONFIG=norns_defconfig \
-  docker.pkg.github.com/monome/norns-kernel-builder/image:latest
+  ghcr.io/monome/norns-kernel-builder/image:latest
