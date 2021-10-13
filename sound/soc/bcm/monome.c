@@ -50,7 +50,7 @@ static int snd_rpi_monome_hw_params(struct snd_pcm_substream *substream,
 
   if (ret < 0)
     {
-      dev_err(card->dev, "Unable to set CS4270 system clock.");
+      dev_err(card->dev, "Unable to set CS4271 system clock.");
       return ret;
     }
   
@@ -74,12 +74,12 @@ static struct snd_soc_ops snd_rpi_monome_ops = {
 
 static struct snd_soc_dai_link snd_rpi_monome_dai[] = {
 	{
-		.name = "monome cs4270",
-		.stream_name = "monome cs4270",
+		.name = "monome cs4271",
+		.stream_name = "monome cs4271",
 		.cpu_dai_name	= "bcm2708-i2s.0",
-		.codec_dai_name = "cs4270-hifi",
+		.codec_dai_name = "cs4271-hifi",
 		.platform_name	= "bcm2708-i2s.0",
-		.codec_name = "cs4270.1-0048",
+		.codec_name = "cs4271.1-0010",
 		.dai_fmt = SND_SOC_DAIFMT_CBM_CFM | \
 		           SND_SOC_DAIFMT_I2S | \
 		           SND_SOC_DAIFMT_NB_NF,
