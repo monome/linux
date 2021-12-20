@@ -1,5 +1,5 @@
 /*
- * ASoC Driver for monome-snd
+ * ASoC Driver for monome-shield
  * connected to a Raspberry Pi
  *
  *  Created on: 20160610
@@ -147,5 +147,5 @@ static struct platform_driver snd_rpi_monome_shield_driver = {
 module_platform_driver(snd_rpi_monome_shield_driver);
 
 MODULE_AUTHOR("Murray Foster <mrafoster@gmail.com>");
-MODULE_DESCRIPTION("ASoC Driver for monome-snd connected to a Raspberry Pi");
+MODULE_DESCRIPTION("ASoC Driver for monome-shield connected to a Raspberry Pi");
 MODULE_LICENSE("GPL v2");
