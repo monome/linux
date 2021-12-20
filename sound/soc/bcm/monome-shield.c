@@ -28,12 +28,12 @@
 
 #define CLK_RATE 12288000UL
 
-static int snd_rpi_monome_init(struct snd_soc_pcm_runtime *rtd)
+static int snd_rpi_monome_shield_init(struct snd_soc_pcm_runtime *rtd)
 {
   return 0;
 }
 
-static int snd_rpi_monome_hw_params(struct snd_pcm_substream *substream,
+static int snd_rpi_monome_shield_hw_params(struct snd_pcm_substream *substream,
 			   struct snd_pcm_hw_params *params)
 {
   struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -58,21 +58,21 @@ static int snd_rpi_monome_hw_params(struct snd_pcm_substream *substream,
   return snd_soc_dai_set_bclk_ratio(cpu_dai, 64);
 }
 
-static int snd_rpi_monome_startup(struct snd_pcm_substream *substream) {
+static int snd_rpi_monome_shield_startup(struct snd_pcm_substream *substream) {
   return 0;
 }
 
-static void snd_rpi_monome_shutdown(struct snd_pcm_substream *substream) {
+static void snd_rpi_monome_shield_shutdown(struct snd_pcm_substream *substream) {
 }
 
 /* machine stream operations */
-static struct snd_soc_ops snd_rpi_monome_ops = {
-  .hw_params = snd_rpi_monome_hw_params,
-  .startup = snd_rpi_monome_startup,
-  .shutdown = snd_rpi_monome_shutdown,
+static struct snd_soc_ops snd_rpi_monome_shield_ops = {
+  .hw_params = snd_rpi_monome_shield_hw_params,
+  .startup = snd_rpi_monome_shield_startup,
+  .shutdown = snd_rpi_monome_shield_shutdown,
 };
 
-static struct snd_soc_dai_link snd_rpi_monome_dai[] = {
+static struct snd_soc_dai_link snd_rpi_monome_shield_dai[] = {
 	{
 		.name = "monome cs4271",
 		.stream_name = "monome cs4271",
@@ -83,27 +83,27 @@ static struct snd_soc_dai_link snd_rpi_monome_dai[] = {
 		.dai_fmt = SND_SOC_DAIFMT_CBM_CFM | \
 		           SND_SOC_DAIFMT_I2S | \
 		           SND_SOC_DAIFMT_NB_NF,
-		.ops = &snd_rpi_monome_ops,
-		.init = snd_rpi_monome_init,
+		.ops = &snd_rpi_monome_shield_ops,
+		.init = snd_rpi_monome_shield_init,
 	},
 };
 
-static struct snd_soc_card snd_rpi_monome = {
-	.name = "snd_rpi_monome",
+static struct snd_soc_card snd_rpi_monome_shield = {
+	.name = "snd_rpi_monome_shield",
 	.owner = THIS_MODULE,
-	.dai_link = snd_rpi_monome_dai,
-	.num_links = ARRAY_SIZE(snd_rpi_monome_dai),
+	.dai_link = snd_rpi_monome_shield_dai,
+	.num_links = ARRAY_SIZE(snd_rpi_monome_shield_dai),
 };
 
-static int snd_rpi_monome_probe(struct platform_device *pdev)
+static int snd_rpi_monome_shield_probe(struct platform_device *pdev)
 {
 	int ret = 0;
 	
-	snd_rpi_monome.dev = &pdev->dev;
+	snd_rpi_monome_shield.dev = &pdev->dev;
 
 	if (pdev->dev.of_node) {
 		struct device_node *i2s_node;
-		struct snd_soc_dai_link *dai = &snd_rpi_monome_dai[0];
+		struct snd_soc_dai_link *dai = &snd_rpi_monome_shield_dai[0];
 		i2s_node = of_parse_phandle(pdev->dev.of_node,
 					    "i2s-controller", 0);
 
@@ -115,7 +115,7 @@ static int snd_rpi_monome_probe(struct platform_device *pdev)
 		}		
 	}
 	
-	ret = snd_soc_register_card(&snd_rpi_monome);
+	ret = snd_soc_register_card(&snd_rpi_monome_shield);
 	if (ret)
 	  {
 	    dev_err(&pdev->dev,
@@ -124,27 +124,27 @@ static int snd_rpi_monome_probe(struct platform_device *pdev)
 	return ret;
 }
 
-static int snd_rpi_monome_remove(struct platform_device *pdev)
+static int snd_rpi_monome_shield_remove(struct platform_device *pdev)
 {
-	return snd_soc_unregister_card(&snd_rpi_monome);
+	return snd_soc_unregister_card(&snd_rpi_monome_shield);
 }
 
-static const struct of_device_id snd_rpi_monome_of_match[] = {
-	{ .compatible = "monome", },
+static const struct of_device_id snd_rpi_monome_shield_of_match[] = {
+	{ .compatible = "monome-shield", },
 	{},
 };
-MODULE_DEVICE_TABLE(of, snd_rpi_monome_of_match);
+MODULE_DEVICE_TABLE(of, snd_rpi_monome_shield_of_match);
 
-static struct platform_driver snd_rpi_monome_driver = {
+static struct platform_driver snd_rpi_monome_shield_driver = {
        .driver         = {
-		.name   = "snd-rpi-monome",
+		.name   = "snd-rpi-monome_shield",
 		.owner  = THIS_MODULE,
-		.of_match_table = snd_rpi_monome_of_match,
+		.of_match_table = snd_rpi_monome_shield_of_match,
        },
-       .probe          = snd_rpi_monome_probe,
-       .remove         = snd_rpi_monome_remove,
+       .probe          = snd_rpi_monome_shield_probe,
+       .remove         = snd_rpi_monome_shield_remove,
 };
-module_platform_driver(snd_rpi_monome_driver);
+module_platform_driver(snd_rpi_monome_shield_driver);
 
 MODULE_AUTHOR("Murray Foster <mrafoster@gmail.com>");
 MODULE_DESCRIPTION("ASoC Driver for monome-snd connected to a Raspberry Pi");
