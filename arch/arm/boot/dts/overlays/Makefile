@@ -111,6 +111,7 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
 	miniuart-bt.dtbo \
 	mmc.dtbo \
 	monome-snd.dtbo \
+	monome-shield.dtbo \
 	mpu6050.dtbo \
 	mz61581.dtbo \
 	norns-buttons-encoders.dtbo \

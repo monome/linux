@@ -271,6 +271,13 @@ config SND_BCM2708_SOC_FE_PI_AUDIO
 config SND_BCM2708_SOC_MONOME
        tristate "Support for monome-snd"
        depends on SND_BCM2708_SOC_I2S || SND_BCM2835_SOC_I2S
+       select SND_SOC_CS4270
+       help
+       Say Y or M if you want to add support for Monome soundcard
+
+config SND_BCM2708_SOC_MONOME_SHIELD
+       tristate "Support for monome-shield"
+       depends on SND_BCM2708_SOC_I2S || SND_BCM2835_SOC_I2S
        select SND_SOC_CS4271
        select SND_SOC_CS4271_I2C
        help
