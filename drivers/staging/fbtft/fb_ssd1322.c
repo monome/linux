@@ -127,7 +127,7 @@ static int blank(struct fbtft_par *par, bool on)
 
 static int write_vmem(struct fbtft_par *par, size_t offset, size_t len)
 {
-	u16 *vmem16 = (u16 *)(par->info->screen_base);
+	u16 *vmem16 = (u16 *)par->info->screen_buffer;
 	u8 *buf = par->txbuf.buf;
 	int y, x, bl_height, bl_width;
 	int ret = 0;

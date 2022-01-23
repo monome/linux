@@ -62,8 +62,8 @@ RESET# = GPIO6
         bgr = <0>;
         fps = <20>;
 
-        reset-gpios = <&gpio 6 0>;
-        dc-gpios = <&gpio 5 1>;
+        reset-gpios = <&gpio 6 1>;
+        dc-gpios = <&gpio 5 0>;
         debug = <3>;
       };
     };
