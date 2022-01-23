@@ -72,18 +72,14 @@ static struct snd_soc_ops snd_rpi_monome_ops = {
 };
 
 SND_SOC_DAILINK_DEFS(snd_rpi_monome,
-	DAILINK_COMP_ARRAY(COMP_CPU("bcm2708-i2s.0")),
+	DAILINK_COMP_ARRAY(COMP_CPU("3f203000.i2s")),
 	DAILINK_COMP_ARRAY(COMP_CODEC("cs4270.1-0048", "cs4270-hifi")),
-	DAILINK_COMP_ARRAY(COMP_PLATFORM("bcm2708-i2s.0")));
+	DAILINK_COMP_ARRAY(COMP_PLATFORM("3f203000.i2s")));
 
 static struct snd_soc_dai_link snd_rpi_monome_dai[] = {
 	{
 		.name = "monome cs4270",
 		.stream_name = "monome cs4270",
-		//.cpu_dai_name	= "bcm2708-i2s.0",
-		//.codec_dai_name = "cs4270-hifi",
-		//.platform_name	= "bcm2708-i2s.0",
-		//.codec_name = "cs4270.1-0048",
 		.dai_fmt = SND_SOC_DAIFMT_CBM_CFM | \
 		           SND_SOC_DAIFMT_I2S | \
 		           SND_SOC_DAIFMT_NB_NF,
@@ -108,25 +104,21 @@ static int snd_rpi_monome_probe(struct platform_device *pdev)
 
 	if (pdev->dev.of_node) {
 		struct device_node *i2s_node;
-		//struct snd_soc_dai_link *dai = &snd_rpi_monome_dai[0];
 		struct snd_soc_dai_link_component *cpu_dai = &(snd_rpi_monome_dai[0].cpus[0]);
 		struct snd_soc_dai_link_component *platform_dai = &(snd_rpi_monome_dai[0].platforms[0]);
 
 		i2s_node = of_parse_phandle(pdev->dev.of_node,
 					    "i2s-controller", 0);
 
-		dev_alert(&pdev->dev, "i2s_node = 0x%p\n", i2s_node);
-
 		if (i2s_node) {
-			//dai->cpu_dai_name = NULL;
-			//dai->cpu_of_node = i2s_node;
 			cpu_dai->name = NULL;
 			cpu_dai->of_node = i2s_node;
-			//dai->platform_name = NULL;
-			//dai->platform_of_node = i2s_node;
 			platform_dai->name = NULL;
 			platform_dai->of_node = i2s_node;
+		} else {
+			dev_err(&pdev->dev, "monome-snd-overly: i2s_node = NULL\n");
 		}
+
 	}
 
 	ret = snd_soc_register_card(&snd_rpi_monome);
