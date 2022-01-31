@@ -28,10 +28,10 @@
 			#size-cells = <0>;
 			status = "okay";
 
-			cs4271: cs4271@10 {
+			cs4270: cs4270@48 {
 				#sound-dai-cells = <0>;
-				compatible = "cirrus,cs4271";
-				reg = <0x10>;
+				compatible = "cirrus,cs4270";
+				reg = <0x48>;
 				reset-gpio = <&gpio 17 2>;
 				status="okay";
 
