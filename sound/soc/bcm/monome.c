@@ -19,6 +19,7 @@
  */
 #include <linux/module.h>
 #include <linux/platform_device.h>
+#include <linux/errno.h>
 
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -111,20 +112,25 @@ static int snd_rpi_monome_probe(struct platform_device *pdev)
 					    "i2s-controller", 0);
 
 		if (i2s_node) {
+			//dev_alert(&pdev->dev, "using overlay i2s_node = %p\n", i2s_node);
 			cpu_dai->name = NULL;
 			cpu_dai->of_node = i2s_node;
 			platform_dai->name = NULL;
 			platform_dai->of_node = i2s_node;
 		} else {
 			dev_err(&pdev->dev, "monome-snd-overly: i2s_node = NULL\n");
+			dev_err(&pdev->dev, "falling back to cpu_dai: %s, platform_dai: %s\n", cpu_dai->name, platform_dai->name);
 		}
 
 	}
 
 	ret = snd_soc_register_card(&snd_rpi_monome);
-	if (ret) {
-	    dev_err(&pdev->dev,
-		    "snd_soc_register_card() failed (%d)\n", ret);
+	if (ret == -EPROBE_DEFER) {
+		dev_alert_once(&pdev->dev, "probe; waiting for codec.\n");
+	} else if (ret) {
+	    dev_err(&pdev->dev, "snd_soc_register_card() failed (%d)\n", ret);
+	} else {
+		dev_info(&pdev->dev, "probe; card registered.\n");
 	}
 	return ret;
 }
