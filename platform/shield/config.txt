@@ -33,3 +33,7 @@ dtparam=b1_pin=22
 dtparam=b2_pin=26
 dtparam=b3_pin=13
 
+#[rpi4]
+#enable_uart=1
+#uart_2ndstage=1
+#arm_boost=1
