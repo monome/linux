@@ -40,8 +40,8 @@
 				  gpios = <17>;
 				  output-high;
 				  line-name = "reset-gpio";
-			       };
-                        };
+				};
+            };
 		};
-	};	   
+	};
 };
