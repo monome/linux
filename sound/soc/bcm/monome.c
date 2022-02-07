@@ -72,10 +72,14 @@ static struct snd_soc_ops snd_rpi_monome_ops = {
   .shutdown = snd_rpi_monome_shutdown,
 };
 
+// cat /sys/kernel/debug/asoc
+// rpi3: "3f203000.i2s"
+// rpi4: "fe203000.i2s"
+
 SND_SOC_DAILINK_DEFS(snd_rpi_monome,
-	DAILINK_COMP_ARRAY(COMP_CPU("3f203000.i2s")),
+	DAILINK_COMP_ARRAY(COMP_CPU("fe203000.i2s")),
 	DAILINK_COMP_ARRAY(COMP_CODEC("cs4270.1-0048", "cs4270-hifi")),
-	DAILINK_COMP_ARRAY(COMP_PLATFORM("3f203000.i2s")));
+	DAILINK_COMP_ARRAY(COMP_PLATFORM("fe203000.i2s")));
 
 static struct snd_soc_dai_link snd_rpi_monome_dai[] = {
 	{
