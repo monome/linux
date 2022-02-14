@@ -645,11 +645,6 @@ Load:   dtoverlay=balena-fin
 Params: <None>
 
 
-Name:   bmp085_i2c-sensor
-Info:   This overlay is now deprecated - see i2c-sensor
-Load:   <Deprecated>
-
-
 Name:   bq27441
 Info:   TI BQ27441 battery management
 Load:   dtoverlay=bq27441

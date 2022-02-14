@@ -31,7 +31,6 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
 	audiosense-pi.dtbo \
 	audremap.dtbo \
 	balena-fin.dtbo \
-	bmp085_i2c-sensor.dtbo \
 	bq27441.dtbo \
 	cap1106.dtbo \
 	chipdip-dac.dtbo \
