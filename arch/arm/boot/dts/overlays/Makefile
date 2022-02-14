@@ -138,6 +138,8 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
 	mlx90640.dtbo \
 	mmc.dtbo \
 	monome-snd.dtbo \
+	monome-snd-4270.dtbo \
+	monome-snd-4271.dtbo \
 	mpu6050.dtbo \
 	mz61581.dtbo \
 	norns-buttons-encoders.dtbo \
