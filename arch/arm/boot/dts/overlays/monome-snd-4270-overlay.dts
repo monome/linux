@@ -1,0 +1,61 @@
+// Definitions for monome-snd
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2708";
+
+	fragment@0 {
+		target = <&sound>;
+		__overlay__ {
+			compatible = "simple-audio-card";
+			status = "okay";
+			simple-audio-card,name = "monome-norns-4270";
+			simple-audio-card,dai-link {
+				format = "i2s";
+				mclk-fs = <64>; // cs4270 datasheet says SCLK must be 48x or 64x for max system performance
+				bitclock-master = <&codec_dai>;
+				frame-master = <&codec_dai>;
+				cpu {
+					sound-dai = <&i2s>;
+					system-clock-frequency = <12288000>;
+				};
+				codec_dai: codec {
+					sound-dai = <&cs4270>;
+					system-clock-frequency = <12288000>;
+				};
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&i2s>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@2 {
+		target = <&i2c1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			cs4270: cs4270@48 {
+				#sound-dai-cells = <0>;
+				compatible = "cirrus,cs4270";
+				reg = <0x48>;
+				reset-gpio = <&gpio 17 2>;
+				status = "okay";
+
+				reset_pin {
+				  gpio-hog;
+				  gpios = <17>;
+				  output-high;
+				  line-name = "reset-gpio";
+				};
+            };
+		};
+	};
+};
