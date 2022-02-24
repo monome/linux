@@ -10,15 +10,15 @@
 		__overlay__ {
 			compatible = "simple-audio-card";
 			status = "okay";
-			simple-audio-card,name = "monome-norns-4271";
+			simple-audio-card,name = "snd-rpi-monome";
 			simple-audio-card,dai-link {
 				format = "i2s";
-				mclk-fs = <64>; // cs4270 datasheet says SCLK must be 48x or 64x for max system performance
 				bitclock-master = <&codec_dai>;
 				frame-master = <&codec_dai>;
 				cpu {
 					sound-dai = <&i2s>;
-					system-clock-frequency = <12288000>;
+					dai-tdm-slot-num = <2>;
+					dai-tdm-slot-width = <32>;
 				};
 				codec_dai: codec {
 					sound-dai = <&cs4271>;

@@ -19,7 +19,7 @@ dtparam=rotate=180
 # CS4270 codec used by soundcard connected using I2C
 dtparam=i2s=on
 dtparam=i2c=on
-dtoverlay=monome-snd
+dtoverlay=monome-snd-4270
 
 # Buttons and encoders
 dtoverlay=norns-buttons-encoders
