@@ -17,7 +17,7 @@ dtoverlay=ssd1322-spi
 # CS4270 codec used by soundcard connected using I2C
 dtparam=i2s=on
 dtparam=i2c=on
-dtoverlay=monome-snd
+dtoverlay=monome-snd-4270
 
 # Battery management
 dtoverlay=bq27441
