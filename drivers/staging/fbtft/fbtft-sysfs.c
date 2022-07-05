@@ -93,8 +93,37 @@ out:
 	return ret;
 }
 
-static ssize_t
-sprintf_gamma(struct fbtft_par *par, u32 *curves, char *buf)
+int fbtft_precharge_parse_str(struct fbtft_par *par, u32 *voltage,
+			      const char *str, int size)
+{
+	char* tmp;
+	unsigned long val;
+	int ret;
+
+	fbtft_par_dbg(DEBUG_SYSFS, par, "%s() str=\n", __func__);
+
+	if (!str || !voltage)
+		return -EINVAL;
+
+	fbtft_par_dbg(DEBUG_SYSFS, par, "%s\n", str);
+
+	tmp = kmemdup(str, size + 1, GFP_KERNEL);
+	if (!tmp)
+		return -ENOMEM;
+
+	ret = get_next_ulong(&tmp, &val, " ", 16);
+	if (ret)
+		goto out;
+
+	voltage[0] = val;
+	//memcpy(voltage, &val, sizeof(voltage));
+
+out:
+	kfree(tmp);
+	return ret;
+}
+
+static ssize_t sprintf_gamma(struct fbtft_par *par, u32 *curves, char *buf)
 {
 	ssize_t len = 0;
 	unsigned int i, j;
@@ -107,6 +136,20 @@ sprintf_gamma(struct fbtft_par *par, u32 *curves, char *buf)
 		buf[len - 1] = '\n';
 	}
 	mutex_unlock(&par->gamma.lock);
+
+	return len;
+}
+
+static ssize_t
+sprintf_precharge(struct fbtft_par *par, u32 *voltage, char *buf)
+{
+	ssize_t len = 0;
+
+	if (voltage != NULL){
+		mutex_lock(&par->precharge.lock);
+		len += scnprintf(buf, PAGE_SIZE, "%04x\n", voltage[0]);
+		mutex_unlock(&par->precharge.lock);
+	}
 
 	return len;
 }
@@ -137,6 +180,30 @@ static ssize_t store_gamma_curve(struct device *device,
 	return count;
 }
 
+static ssize_t store_precharge(struct device *device,
+			       struct device_attribute *attr,
+			       const char *buf, size_t count)
+{
+	struct fb_info *fb_info = dev_get_drvdata(device);
+	struct fbtft_par *par = fb_info->par;
+	u32 tmp_voltage[1];
+	int ret;
+
+	ret = fbtft_precharge_parse_str(par, tmp_voltage, buf, count);
+	if (ret)
+		return ret;
+
+	ret = par->fbtftops.set_precharge_voltage(par, tmp_voltage);
+	if (ret)
+		return ret;
+
+	mutex_lock(&par->precharge.lock);
+	memcpy(par->precharge.voltage, tmp_voltage, sizeof(tmp_voltage));
+	mutex_unlock(&par->precharge.lock);
+
+	return count;
+}
+
 static ssize_t show_gamma_curve(struct device *device,
 				struct device_attribute *attr, char *buf)
 {
@@ -146,8 +213,29 @@ static ssize_t show_gamma_curve(struct device *device,
 	return sprintf_gamma(par, par->gamma.curves, buf);
 }
 
+static ssize_t show_precharge(struct device *device,
+			      struct device_attribute *attr, char *buf)
+{
+	struct fb_info *fb_info = dev_get_drvdata(device);
+	struct fbtft_par *par = fb_info->par;
+
+	return sprintf_precharge(par, par->precharge.voltage, buf);
+}
+
 static struct device_attribute gamma_device_attrs[] = {
-	__ATTR(gamma, 0660, show_gamma_curve, store_gamma_curve),
+	#pragma push_macro("VERIFY_OCTAL_PERMISSIONS")
+	#undef VERIFY_OCTAL_PERMISSIONS
+	#define VERIFY_OCTAL_PERMISSIONS(perms) (perms)
+	__ATTR(gamma, 0666, show_gamma_curve, store_gamma_curve),
+	#pragma pop_macro("VERIFY_OCTAL_PERMISSIONS")
+};
+
+static struct device_attribute precharge_device_attrs[] = {
+	#pragma push_macro("VERIFY_OCTAL_PERMISSIONS")
+	#undef VERIFY_OCTAL_PERMISSIONS
+	#define VERIFY_OCTAL_PERMISSIONS(perms) (perms)
+	__ATTR(precharge, 0666, show_precharge, store_precharge),
+	#pragma pop_macro("VERIFY_OCTAL_PERMISSIONS")
 };
 
 void fbtft_expand_debug_value(unsigned long *debug)
@@ -210,6 +298,8 @@ void fbtft_sysfs_init(struct fbtft_par *par)
 	device_create_file(par->info->dev, &debug_device_attr);
 	if (par->gamma.curves && par->fbtftops.set_gamma)
 		device_create_file(par->info->dev, &gamma_device_attrs[0]);
+	if (par->precharge.voltage && par->fbtftops.set_precharge_voltage)
+		device_create_file(par->info->dev, &precharge_device_attrs[0]);
 }
 
 void fbtft_sysfs_exit(struct fbtft_par *par)
@@ -217,4 +307,6 @@ void fbtft_sysfs_exit(struct fbtft_par *par)
 	device_remove_file(par->info->dev, &debug_device_attr);
 	if (par->gamma.curves && par->fbtftops.set_gamma)
 		device_remove_file(par->info->dev, &gamma_device_attrs[0]);
+	if (par->precharge.voltage && par->fbtftops.set_precharge_voltage)
+		device_remove_file(par->info->dev, &precharge_device_attrs[0]);
 }

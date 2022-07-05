@@ -514,6 +514,8 @@ static void fbtft_merge_fbtftops(struct fbtft_ops *dst, struct fbtft_ops *src)
 		dst->set_var = src->set_var;
 	if (src->set_gamma)
 		dst->set_gamma = src->set_gamma;
+	if (src->set_precharge_voltage)
+		dst->set_precharge_voltage = src->set_precharge_voltage;
 }
 
 /**
@@ -555,6 +557,8 @@ struct fb_info *fbtft_framebuffer_alloc(struct fbtft_display *display,
 	const s16 *init_sequence = display->init_sequence;
 	char *gamma = display->gamma;
 	u32 *gamma_curves = NULL;
+	char *precharge = display->precharge;
+	u32 *voltage = NULL;
 
 	/* sanity check */
 	if (display->gamma_num * display->gamma_len >
@@ -638,6 +642,16 @@ struct fb_info *fbtft_framebuffer_alloc(struct fbtft_display *display,
 			goto alloc_fail;
 	}
 
+	if (precharge) {
+		voltage = devm_kcalloc(dev,
+				       1,
+				       sizeof(voltage[0]),
+				       GFP_KERNEL);
+
+		if (!voltage)
+			goto alloc_fail;
+	}
+
 	info = framebuffer_alloc(sizeof(struct fbtft_par), dev);
 	if (!info)
 		goto alloc_fail;
@@ -707,6 +721,13 @@ struct fb_info *fbtft_framebuffer_alloc(struct fbtft_display *display,
 	if (par->gamma.curves && gamma) {
 		if (fbtft_gamma_parse_str(par, par->gamma.curves, gamma,
 					  strlen(gamma)))
+			goto release_framebuf;
+	}
+
+	par->precharge.voltage = voltage;
+	mutex_init(&par->precharge.lock);
+	if (par->precharge.voltage && precharge) {
+		if (fbtft_precharge_parse_str(par, par->precharge.voltage, precharge, strlen(precharge)))
 			goto release_framebuf;
 	}
 
@@ -826,6 +847,12 @@ int fbtft_register_framebuffer(struct fb_info *fb_info)
 
 	if (par->fbtftops.set_gamma && par->gamma.curves) {
 		ret = par->fbtftops.set_gamma(par, par->gamma.curves);
+		if (ret)
+			goto reg_fail;
+	}
+
+	if (par->fbtftops.set_precharge_voltage && par->precharge.voltage) {
+		ret = par->fbtftops.set_precharge_voltage(par, par->precharge.voltage);
 		if (ret)
 			goto reg_fail;
 	}

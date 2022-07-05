@@ -13,7 +13,8 @@
 #define HEIGHT      64
 #define GAMMA_NUM   1
 #define GAMMA_LEN   15
-#define DEFAULT_GAMMA "1 1 1 1 1 2 2 3 3 4 4 5 5 6 6"
+#define DEFAULT_GAMMA "0 8 8 8 8 8 8 8 8 8 8 8 8 8 8"
+#define DEFAULT_PRECHARGE "1F"
 
 static int init_display(struct fbtft_par *par)
 {
@@ -94,13 +95,26 @@ static int set_gamma(struct fbtft_par *par, u32 *curves)
 		}
 	}
 
-	//write_reg(par, 0xB8,
-	//0,1,2,3,4,5,6,7,8,
-	//9,10,15,25,30,35);
-	//tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], tmp[6], tmp[7],
-	//tmp[8], tmp[9], tmp[10], tmp[11], tmp[12], tmp[13], tmp[14]);
-	//write_reg(par, 0);
-	
+	write_reg(par, 0xB8,
+	tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], tmp[6], tmp[7],
+	tmp[8], tmp[9], tmp[10], tmp[11], tmp[12], tmp[13], tmp[14]);
+	write_reg(par, 0x00);
+
+	return 0;
+}
+
+static int set_precharge_voltage(struct fbtft_par *par, u32 *voltage)
+{
+	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "%s()\n", __func__);
+
+	if (voltage == NULL) {
+		dev_err(par->info->device,
+			"Null pointer passed to set_precharge_voltage().\n");
+		return -EINVAL;
+	}
+
+	// Range: 0x00 - 0x1F
+	write_reg(par, 0xBB, voltage[0]);
 
 	return 0;
 }
@@ -174,12 +188,14 @@ static struct fbtft_display display = {
 	.gamma_num = GAMMA_NUM,
 	.gamma_len = GAMMA_LEN,
 	.gamma = DEFAULT_GAMMA,
+	.precharge = DEFAULT_PRECHARGE,
 	.fbtftops = {
 		.init_display = init_display,
 		.write_vmem = write_vmem,
 		.set_addr_win  = set_addr_win,
 		.blank = blank,
 		.set_gamma = set_gamma,
+		.set_precharge_voltage = set_precharge_voltage,
 	},
 };
 

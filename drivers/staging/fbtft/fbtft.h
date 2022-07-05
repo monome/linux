@@ -53,6 +53,7 @@ struct fbtft_par;
  * @set_var: Configure LCD with values from variables like @rotate and @bgr
  *           (optional)
  * @set_gamma: Set Gamma curve (optional)
+ * @set_precharge_voltage: Set pre-charge voltage (optional)
  *
  * Most of these operations have default functions assigned to them in
  *     fbtft_framebuffer_alloc()
@@ -82,6 +83,7 @@ struct fbtft_ops {
 
 	int (*set_var)(struct fbtft_par *par);
 	int (*set_gamma)(struct fbtft_par *par, u32 *curves);
+	int (*set_precharge_voltage)(struct fbtft_par *par, u32 *voltage);
 };
 
 /**
@@ -117,6 +119,7 @@ struct fbtft_display {
 	char *gamma;
 	int gamma_num;
 	int gamma_len;
+	char *precharge;
 	unsigned long debug;
 };
 
@@ -181,6 +184,7 @@ struct fbtft_platform_data {
  * @gamma.curves: Pointer to Gamma curve array
  * @gamma.num_values: Number of values per Gamma curve
  * @gamma.num_curves: Number of Gamma curves
+ * @precharge.voltage: 
  * @debug: Pointer to debug value
  * @current_debug:
  * @first_update_done: Used to only time the first display update
@@ -223,6 +227,10 @@ struct fbtft_par {
 		int num_values;
 		int num_curves;
 	} gamma;
+	struct {
+		struct mutex lock;
+		u32 *voltage;
+	} precharge;
 	unsigned long debug;
 	bool first_update_done;
 	ktime_t update_time;
