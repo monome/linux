@@ -11,6 +11,7 @@
 #define DRVNAME     "fb_ssd1322"
 #define WIDTH       128
 #define HEIGHT      64
+#define BPP         4
 #define GAMMA_NUM   1
 #define GAMMA_LEN   15
 #define DEFAULT_GAMMA "1 1 1 1 1 2 2 3 3 4 4 5 5 6 6"
@@ -44,6 +45,13 @@ static int init_display(struct fbtft_par *par)
 	write_reg(par, 0xBE, 0x04);	  /* Set VCOMH */
 	write_reg(par, 0xA6);		  /* Normal display */
 	write_reg(par, 0xAF);		  /* Display ON */
+
+	// Though the display only uses 4 bits per pixel, the 4-bit-pixel
+	// has to be sent through SPI one byte at a time. Thus, we need a
+	// buffer twice the size of vmem. For every byte read from the
+	// screen_buffer, we write two to txbuf.
+	par->txbuf.len = HEIGHT*WIDTH;
+	par->txbuf.buf = devm_kzalloc(par->info->device, HEIGHT*WIDTH, GFP_KERNEL);
 
 	return 0;
 }
@@ -115,51 +123,30 @@ static int blank(struct fbtft_par *par, bool on)
 	return 0;
 }
 
-
-#define CYR     613    /* 2.392 */
-#define CYG     601    /* 2.348 */
-#define CYB     233    /* 0.912 */
-/*static unsigned int rgb565_to_y(unsigned int rgb)
-{
-	rgb = cpu_to_le16(rgb);
-	return CYR * (rgb >> 11) + CYG * (rgb >> 5 & 0x3F) + CYB * (rgb & 0x1F);
-}*/
-
 static int write_vmem(struct fbtft_par *par, size_t offset, size_t len)
 {
-	u16 *vmem16 = (u16 *)par->info->screen_buffer;
-	u8 *buf = par->txbuf.buf;
-	int y, x, bl_height, bl_width;
-	int ret = 0;
+	int ret;
+	u8 *vmem8 = (u8 *) par->info->screen_buffer;
+	u8 *txbuf = (u8 *) par->txbuf.buf;
+
+	if( vmem8 == NULL || txbuf == NULL ){
+		ret = -1;
+		dev_err(par->info->device, "%s: returning before attemping to access nulllptr and returned: %d\n", __func__, ret);
+		return ret;
+	}
 
 	/* Set data line beforehand */
 	gpiod_set_value(par->gpio.dc, 1);
 
-	/* convert offset to word index from byte index */
-	offset /= 2;
-	bl_width = par->info->var.xres;
-	bl_height = len / par->info->fix.line_length;
-
-	fbtft_par_dbg(DEBUG_WRITE_VMEM, par,
-		"%s(offset=0x%x bl_width=%d bl_height=%d)\n", __func__, offset, bl_width, bl_height);
-
-	//for(y=0;y<256;y++) 
-	//for(x=0,x<8;x++) 
-	//*buf++ = y>>4 | (y&0xf0);
-
-	for (y = 0; y < bl_height; y++) {
-		for (x = 0; x < bl_width; x++) {
-			//*buf++ = cpu_to_le16(rgb565_to_y(vmem16[offset++])) >> 8;
-			//int z = cpu_to_le16(rgb565_to_y(vmem16[offset++])) >> 8;
-			int z = cpu_to_le16(vmem16[offset++]) >> 8;
-			*buf++ = z>>4 | (z&0xf0); 
-			//*buf++ = cpu_to_le16(rgb565_to_y(vmem16[offset++])) >> 8;
-			//*buf++ = cpu_to_le16(vmem16[offset++]) >> 8;
-		}
+	for (/* NOTHING */; offset < (par->txbuf.len / 2); offset++) {
+		u8 pixel_1 = vmem8[offset] & 0x0F;
+		u8 pixel_2 = vmem8[offset] & 0xF0;
+		// Double up the nibbles in the bytes to be sure.
+		*txbuf++ = pixel_1 | (pixel_1 << 4);
+		*txbuf++ = pixel_2 | (pixel_2 >> 4);
 	}
 
-	/* Write data */
-	ret = par->fbtftops.write(par, par->txbuf.buf, bl_width*bl_height);
+	ret = par->fbtftops.write(par, par->txbuf.buf, par->txbuf.len);
 	if (ret < 0)
 		dev_err(par->info->device, "%s: write failed and returned: %d\n", __func__, ret);
 
@@ -170,7 +157,9 @@ static struct fbtft_display display = {
 	.regwidth = 8,
 	.width = WIDTH,
 	.height = HEIGHT,
-	.txbuflen = WIDTH*HEIGHT,
+	.bpp = BPP,
+	.txbuflen = -2, // need a larger buffer than vmem, which is implicitly
+	                // not allowed. fbtft-core.c: line-737
 	.gamma_num = GAMMA_NUM,
 	.gamma_len = GAMMA_LEN,
 	.gamma = DEFAULT_GAMMA,
